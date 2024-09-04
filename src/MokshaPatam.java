@@ -23,7 +23,7 @@ public class MokshaPatam {
         int current = 1;
 
         while (current != boardsize) {
-            for (int i = current + 1; i <= current + 6; i++) {
+            for (int i = current + 1; i <= current + 5; i++) {
                 if (i <= boardsize) {
                     for(int j = 0; j < ladders.length; j++) {
                         if (ladders[j][0] == i) {
@@ -36,12 +36,34 @@ public class MokshaPatam {
                         }
                     }
                 }
-
+                else{
+                    break;
+                }
             }
+            toSearch.add(current + 6);
+            current = toSearch.remove();
         }
 
         return 0;
     }
+
+//    public void checkSpace(Space Parent, Queue toSearch, Space space, int boardsize){
+//        if (space.getNum() <= boardsize) {
+//            for(int j = 0; j < ladders.length; j++) {
+//                if (ladders[j][0] == i) {
+//                    toSearch.add(ladders[j][1]);
+//                }
+//            }
+//            for(int j = 0; j < snakes.length; j++) {
+//                if (snakes[j][0] == i) {
+//                    toSearch.add(snakes[j][1]);
+//                }
+//            }
+//        }
+//        else{
+//            break;
+//        }
+//    }
 
 
 }
