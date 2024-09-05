@@ -24,16 +24,18 @@ public class MokshaPatam {
         int level = 0;
 
         int current = 1;
+        toSearch.add(1);
 
-        int[] sAndL = new int[boardsize];
+        int[][] info = new int[boardsize][2];
         for(int i = 0; i < boardsize; i++){
-            sAndL[i] = -1;
+            info[i][0] = -1;
+            info[i][1] = 0;
         }
         for(int i = 0; i < ladders.length; i++){
-            sAndL[ladders[i][0] - 1] = ladders[i][1];
+            info[ladders[i][0] - 1][0] = ladders[i][1];
         }
         for(int i = 0; i < snakes.length; i++){
-            sAndL[snakes[i][0] - 1] = snakes[i][1];
+            info[snakes[i][0] - 1][0] = snakes[i][1];
         }
 
         while (current != boardsize) {
@@ -42,27 +44,27 @@ public class MokshaPatam {
                 nextLevel = new LinkedList<Integer>();
                 level ++;
             }
-            if(current + 6 < boardsize){
+            current = toSearch.remove();
+            if(current + 6 >= boardsize){
+                level ++;
                 break;
             }
-            for (int i = current + 1; i < current + 5; i++) {
-                if (sAndL[i] != -1) {
-                    toSearch.add(sAndL[i]);
-                }
-                else{
-                    break;
+            for (int i = current + 1; i <= current + 5; i++) {
+                if (info[i - 1][0] != -1 && info[i - 1][1] == 0) {
+                    nextLevel.add(info[i - 1][0]);
+                    info[i - 1][1] = 1;
                 }
             }
-            if(sAndL[current + 6 - 1] != -1){
-                toSearch.add(sAndL[current + 6]);
+            if(info[current + 6][0] != -1 && info[current+ 6][1] == 0){
+                nextLevel.add(info[current + 6 - 1][0]);
+                info[current + 6][1] = 1;
             }
             else {
-                toSearch.add(current + 6);
+                nextLevel.add(current + 6);
             }
-            current = toSearch.remove();
         }
 
-        return 0;
+        return level;
     }
 
 //    public void checkSpace(Space Parent, Queue toSearch, Space space, int boardsize){
