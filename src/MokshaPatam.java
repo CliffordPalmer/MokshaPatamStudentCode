@@ -26,7 +26,9 @@ public class MokshaPatam {
         int current = 1;
         toSearch.add(1);
 
-        int[][] info = new int[boardsize][2];
+        int[] info = new int[boardsize + 1];
+        boolean[] visited = new boolean[boardsize + 1]
+        int[] depth = new int[boardsize + 1];
         for(int i = 0; i < boardsize; i++){
             info[i][0] = -1;
             info[i][1] = 0;
@@ -51,12 +53,16 @@ public class MokshaPatam {
             }
             for (int i = current + 1; i <= current + 5; i++) {
                 if (info[i - 1][0] != -1 && info[i - 1][1] == 0) {
+                    if(info[i - 1][0] == boardsize){
+                        level ++;
+                        return level;
+                    }
                     nextLevel.add(info[i - 1][0]);
                     info[i - 1][1] = 1;
                 }
             }
             if(info[current + 6][0] != -1 && info[current+ 6][1] == 0){
-                nextLevel.add(info[current + 6 - 1][0]);
+                nextLevel.add(current + 6);
                 info[current + 6][1] = 1;
             }
             else {
@@ -66,24 +72,5 @@ public class MokshaPatam {
 
         return level;
     }
-
-//    public void checkSpace(Space Parent, Queue toSearch, Space space, int boardsize){
-//        if (space.getNum() <= boardsize) {
-//            for(int j = 0; j < ladders.length; j++) {
-//                if (ladders[j][0] == i) {
-//                    toSearch.add(ladders[j][1]);
-//                }
-//            }
-//            for(int j = 0; j < snakes.length; j++) {
-//                if (snakes[j][0] == i) {
-//                    toSearch.add(snakes[j][1]);
-//                }
-//            }
-//        }
-//        else{
-//            break;
-//        }
-//    }
-
 
 }
