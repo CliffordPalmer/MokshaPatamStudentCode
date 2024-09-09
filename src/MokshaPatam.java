@@ -19,17 +19,23 @@ public class MokshaPatam {
      *  to reach the final square on a board with the given size, ladders, and snakes.
      */
     public static int fewestMoves(int boardsize, int[][] ladders, int[][] snakes) {
+        // Queue to store spaces to search for BFS
         Queue<Integer> toSearch = new LinkedList<Integer>();
-        int level = 0;
 
+        // Arrays which hold information about each space that can be checked with constant time
         int[] info = new int[boardsize + 1];
         boolean[] visited = new boolean[boardsize + 1];
         int[] depth = new int[boardsize + 1];
 
-        int current = 1;
+        // int to store the current space
+        int current;
+
+        // Add the first square to the queue
         toSearch.add(1);
+        // Give starting depth of 0
         depth[1] = 0;
 
+        // Fill in ladder and snake arrays
         for(int i = 0; i < ladders.length; i++){
             info[ladders[i][0]] = ladders[i][1];
         }
@@ -37,28 +43,31 @@ public class MokshaPatam {
             info[snakes[i][0]] = snakes[i][1];
         }
 
-        while (current != boardsize) {
+        // Main loop, traverses a simplified version of the game tree
+        do {
+            // If the queue runs out, the board has an infinite loop, so return -1
             if(toSearch.isEmpty()){
                 return -1;
             }
+            // Change to new current square
             current = toSearch.remove();
-            System.out.println(current + ": " + depth[current]);
+            // If within one roll, return current depth + 1
+            if(current == boardsize){
+                return depth[current];
+            }
             if(current + 6 >= boardsize){
-                level ++;
                 return depth[current] + 1;
             }
-
-            for (int i = current + 1; i <= current + 5; i++) {
+            // Check the next 6 spaces for snakes and ladders
+            for (int i = current + 1; i <= current + 6; i++) {
+                // Check if the space is a snake or ladder, and if it has been visited
                 if (info[i] != 0 && !visited[i]) {
-                    if(info[i] == boardsize){
-                        level ++;
-                        return depth[current] + 1;
-                    }
                     toSearch.add(info[i]);
                     visited[i] = true;
                     depth[info[i]] = depth[current] + 1;
                 }
             }
+            // Add the further possible space that isn't a snake or ladder to the queue
             for (int i = current + 6; i > current; i--){
                 if(!visited[i] && info[i] == 0){
                     toSearch.add(i);
@@ -67,12 +76,9 @@ public class MokshaPatam {
                     break;
                 }
             }
-//            if(!visited[current + 6] && info[current + 6] == 0){
-//                toSearch.add(current + 6);
-//                visited[current + 6] = true;
-//                depth[current + 6] = depth[current] + 1;
-//            }
-        }
+            // Continue looping until current is the last space
+        } while (current != boardsize);
+        // Return the depth of the current space
         return depth[current];
     }
 
