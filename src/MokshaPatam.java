@@ -20,7 +20,6 @@ public class MokshaPatam {
      */
     public static int fewestMoves(int boardsize, int[][] ladders, int[][] snakes) {
         Queue<Integer> toSearch = new LinkedList<Integer>();
-        Queue<Integer> nextLevel = new LinkedList<Integer>();
         int level = 0;
 
         int[] info = new int[boardsize + 1];
@@ -29,7 +28,7 @@ public class MokshaPatam {
 
         int current = 1;
         toSearch.add(1);
-        depth[1] = 1;
+        depth[1] = 0;
 
         for(int i = 0; i < ladders.length; i++){
             info[ladders[i][0]] = ladders[i][1];
@@ -40,35 +39,42 @@ public class MokshaPatam {
 
         while (current != boardsize) {
             if(toSearch.isEmpty()){
-                toSearch = nextLevel;
-                nextLevel = new LinkedList<Integer>();
-                level ++;
+                return -1;
             }
             current = toSearch.remove();
+            System.out.println(current + ": " + depth[current]);
             if(current + 6 >= boardsize){
                 level ++;
-                break;
+                return depth[current] + 1;
             }
+
             for (int i = current + 1; i <= current + 5; i++) {
                 if (info[i] != 0 && !visited[i]) {
                     if(info[i] == boardsize){
                         level ++;
-                        return level;
+                        return depth[current] + 1;
                     }
-                    nextLevel.add(info[i]);
+                    toSearch.add(info[i]);
                     visited[i] = true;
+                    depth[info[i]] = depth[current] + 1;
                 }
             }
-            if(info[current + 6] != 0 && visited[current+ 6] == false){
-                nextLevel.add(current + 6);
-                visited[current + 6] = true;
+            for (int i = current + 6; i > current; i--){
+                if(!visited[i] && info[i] == 0){
+                    toSearch.add(i);
+                    visited[i] = true;
+                    depth[i] = depth[current] + 1;
+                    break;
+                }
             }
-            else {
-                nextLevel.add(current + 6);
-            }
+//            if(!visited[current + 6] && info[current + 6] == 0){
+//                toSearch.add(current + 6);
+//                visited[current + 6] = true;
+//                depth[current + 6] = depth[current] + 1;
+//            }
         }
-
-        return level;
+        return depth[current];
     }
+
 
 }
